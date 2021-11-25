@@ -36,8 +36,8 @@ contract Campaign {
     }
 
     constructor(uint min, address creator) public {
-         manager  = creator;
-         minimumContribution = min;
+        manager  = creator;
+        minimumContribution = min;
     }
 
     function contribute() public payable {
@@ -68,5 +68,21 @@ contract Campaign {
 
         request.recipient.transfer(request.value);
         request.complete = true;
+    }
+
+    function getSummary() public view returns (
+        uint, uint, uint, uint, address
+    ) {
+        return (
+            minimumContribution,
+            this.balance,
+            requests.length,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestsCount() public view returns (uint) {
+        return requests.length;
     }
 }

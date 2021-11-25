@@ -3,8 +3,9 @@ import Layout from "../../components/Layout";
 import { Form, Button, Input, Message } from "semantic-ui-react";
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
+import { Router } from '../../routes';
 
-function New() {
+const New = () => {
     const [contribution, setContribution] = useState('');
     const [errorMessage, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -13,11 +14,12 @@ function New() {
         event.preventDefault();
 
         try {
+            setError('');
             setLoading(true);
             const accounts = await web3.eth.getAccounts();
             await factory.methods.createCampaign(contribution, accounts[0])
                 .send({ from: accounts[0] });
-
+            Router.pushRoute('/');
         } catch (err) {
             setError(err.message)
         }

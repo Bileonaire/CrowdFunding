@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { Card, Button } from "semantic-ui-react";
 import factory from "../ethereum/factory";
 import Layout from "../components/Layout";
+import { Link } from "../routes";
 
 function Home({ campaigns = [] }) {
   const router = useRouter();
@@ -15,7 +16,11 @@ function Home({ campaigns = [] }) {
     const ref = campaigns.map((campaign) => {
         return {
             header: campaign,
-            description: <a>View Campaign</a>,
+            description: (
+              <Link route={`/campaigns/${campaign}`}>
+                <a>View Campaign</a>
+              </Link>
+            ),
             fluid: true
         };
     });
@@ -26,12 +31,17 @@ function Home({ campaigns = [] }) {
     <Layout>
       <div>
         <h3>Open Campaigns</h3>
-        <Button
-          floated="right"
-          content="create Campaign"
-          icon="add circle"
-          primary
-        />
+
+        <Link route="/campaigns/new">
+          <a>
+            <Button
+              floated="right"
+              content="create Campaign"
+              icon="add circle"
+              primary
+            />
+          </a>
+        </Link>
         {renderCampaigns()}
       </div>
     </Layout>
@@ -40,7 +50,6 @@ function Home({ campaigns = [] }) {
 
 export async function getStaticProps(context) {
   const campaigns = await factory.methods.getAddresses().call()
-  console.log(campaigns);
 
   return {
     revalidate: 1,
@@ -51,21 +60,3 @@ export async function getStaticProps(context) {
 }
 
 export default Home;
-
-// -----option2--------
-// import React, { useState, useEffect } from "react";
-// import factory from "../ethereum/factory";
-
-// function CampaignIndex({ campaigns }) {
-//   console.log("campaigns", campaigns);
-
-//   return <h1>{campaigns[0]}</h1>;
-// }
-
-// //uses server side rendering to call the campaign contracts (so good for slow devices)
-// CampaignIndex.getInitialProps = async () => {
-//   const campaigns = await await factory.methods.getAddresses().call();
-//   return { campaigns };
-// };
-
-// export default CampaignIndex;
